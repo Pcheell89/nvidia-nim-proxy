@@ -15,12 +15,29 @@ app.use(express.urlencoded({ limit: '100mb', extended: true }));
 const NIM_API_BASE = 'https://integrate.api.nvidia.com/v1';
 const NIM_API_KEY = process.env.NIM_API_KEY;
 
-// Маппинг моделей (можно добавлять свои)
+// Маппинг моделей
 const MODEL_MAPPING = {
+  // === Основные рекомендации для ролки ===
   'gpt-4': 'deepseek-ai/deepseek-v4-pro-0813',
   'gpt-4o': 'deepseek-ai/deepseek-v4-pro-0813',
   'deepseek-v4-pro': 'deepseek-ai/deepseek-v4-pro-0813',
-  'deepseek-v4-pro-0813': 'deepseek-ai/deepseek-v4-pro-0813'
+  'deepseek-v4-pro-0813': 'deepseek-ai/deepseek-v4-pro-0813',
+
+  // DeepSeek Flash (быстрее)
+  'gpt-4-turbo': 'deepseek-ai/deepseek-v4-flash',
+  'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash',
+
+  // MiniMax M3
+  'minimax': 'minimaxai/minimax-m3',
+  'minimax-m3': 'minimaxai/minimax-m3',
+  'gpt-4o-mini': 'minimaxai/minimax-m3',
+
+  // Другие сильные модели
+  'kimi': 'moonshotai/kimi-k2.6',
+  'kimi-k2.6': 'moonshotai/kimi-k2.6',
+  'glm': 'z-ai/glm-5.2',
+  'glm-5.2': 'z-ai/glm-5.2',
+  'gemini-pro': 'z-ai/glm-5.2'
 };
 
 // Health check
@@ -28,7 +45,7 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     service: 'NVIDIA NIM Proxy for Janitor AI',
-    model: 'deepseek-ai/deepseek-v4-pro-0813',
+    models: Object.keys(MODEL_MAPPING),
     key_configured: !!NIM_API_KEY
   });
 });
