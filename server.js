@@ -17,27 +17,35 @@ const NIM_API_KEY = process.env.NIM_API_KEY;
 
 // Маппинг моделей
 const MODEL_MAPPING = {
-  // === Основные рекомендации для ролки ===
+  // === DeepSeek V4 Pro (лучшее качество) ===
   'gpt-4': 'deepseek-ai/deepseek-v4-pro-0813',
   'gpt-4o': 'deepseek-ai/deepseek-v4-pro-0813',
   'deepseek-v4-pro': 'deepseek-ai/deepseek-v4-pro-0813',
   'deepseek-v4-pro-0813': 'deepseek-ai/deepseek-v4-pro-0813',
 
-  // DeepSeek Flash (быстрее)
+  // === DeepSeek V4 Flash (быстрее) ===
   'gpt-4-turbo': 'deepseek-ai/deepseek-v4-flash',
   'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash',
 
-  // MiniMax M3
+  // === MiniMax M3 ===
   'minimax': 'minimaxai/minimax-m3',
   'minimax-m3': 'minimaxai/minimax-m3',
   'gpt-4o-mini': 'minimaxai/minimax-m3',
 
-  // Другие сильные модели
+  // === Kimi ===
   'kimi': 'moonshotai/kimi-k2.6',
   'kimi-k2.6': 'moonshotai/kimi-k2.6',
+
+  // === GLM ===
   'glm': 'z-ai/glm-5.2',
   'glm-5.2': 'z-ai/glm-5.2',
-  'gemini-pro': 'z-ai/glm-5.2'
+  'gemini-pro': 'z-ai/glm-5.2',
+
+  // === Gemma 4 31B ===
+  'gemma': 'google/gemma-4-31b-it',
+  'gemma-4': 'google/gemma-4-31b-it',
+  'gemma-4-31b': 'google/gemma-4-31b-it',
+  'gemma-4-31b-it': 'google/gemma-4-31b-it'
 };
 
 // Health check
