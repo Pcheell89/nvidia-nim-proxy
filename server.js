@@ -27,10 +27,11 @@ const MODEL_MAPPING = {
   'gpt-4-turbo': 'deepseek-ai/deepseek-v4-flash',
   'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash',
 
-  // === Kimi K2.6 ===
-  'kimi': 'moonshotai/kimi-k2.6',
-  'kimi-k2.6': 'moonshotai/kimi-k2.6',
-  'kimi-k2': 'moonshotai/kimi-k2.6'
+  // === Gemma 4 31B ===
+  'gemma': 'google/gemma-4-31b-it',
+  'gemma-4': 'google/gemma-4-31b-it',
+  'gemma-4-31b': 'google/gemma-4-31b-it',
+  'gemma-4-31b-it': 'google/gemma-4-31b-it'
 };
 
 // Health check
