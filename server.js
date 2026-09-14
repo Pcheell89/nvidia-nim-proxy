@@ -15,10 +15,10 @@ app.use(express.urlencoded({ limit: '100mb', extended: true }));
 const NIM_API_BASE = 'https://integrate.api.nvidia.com/v1';
 const NIM_API_KEY = process.env.NIM_API_KEY;
 
-// Маппинг моделей — только DeepSeek
+// Маппинг моделей — только Mistral Medium 3.5 128B
 const MODEL_MAPPING = {
-  'gpt-4-turbo': 'deepseek-ai/deepseek-v4-flash',
-  'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash'
+  'gpt-4-turbo': 'mistralai/mistral-medium-3.5',
+  'mistral-medium-3.5': 'mistralai/mistral-medium-3.5'
 };
 
 // Health check
@@ -59,7 +59,7 @@ app.post('/v1/chat/completions', async (req, res) => {
 
     // Определяем модель
     const nimModel =
-      MODEL_MAPPING[model] || 'deepseek-ai/deepseek-v4-flash';
+      MODEL_MAPPING[model] || 'mistralai/mistral-medium-3.5';
 
     const response = await axios.post(
       `${NIM_API_BASE}/chat/completions`,
