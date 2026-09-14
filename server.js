@@ -17,21 +17,19 @@ const NIM_API_KEY = process.env.NIM_API_KEY;
 
 // Маппинг моделей
 const MODEL_MAPPING = {
-  // === DeepSeek V4 Pro ===
-  'gpt-4': 'deepseek-ai/deepseek-v4-pro-0813',
-  'gpt-4o': 'deepseek-ai/deepseek-v4-pro-0813',
-  'deepseek-v4-pro': 'deepseek-ai/deepseek-v4-pro-0813',
-  'deepseek-v4-pro-0813': 'deepseek-ai/deepseek-v4-pro-0813',
-
-  // === DeepSeek V4 Flash ===
-  'gpt-4-turbo': 'deepseek-ai/deepseek-v4-flash',
-  'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash',
-
-  // === Gemma 4 31B ===
+  // === Gemma 4 31B (основная) ===
   'gemma': 'google/gemma-4-31b-it',
   'gemma-4': 'google/gemma-4-31b-it',
   'gemma-4-31b': 'google/gemma-4-31b-it',
-  'gemma-4-31b-it': 'google/gemma-4-31b-it'
+  'gemma-4-31b-it': 'google/gemma-4-31b-it',
+
+  // === GLM-5.2 ===
+  'glm': 'z-ai/glm-5.2',
+  'glm-5.2': 'z-ai/glm-5.2',
+
+  // === DeepSeek Flash (на всякий случай) ===
+  'gpt-4-turbo': 'deepseek-ai/deepseek-v4-flash',
+  'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash'
 };
 
 // Health check
@@ -69,7 +67,7 @@ app.post('/v1/chat/completions', async (req, res) => {
     const { model, messages, temperature, max_tokens, stream } = req.body;
 
     // Определяем модель
-    let nimModel = MODEL_MAPPING[model] || 'deepseek-ai/deepseek-v4-pro-0813';
+    let nimModel = MODEL_MAPPING[model] || 'google/gemma-4-31b-it';
 
     const response = await axios.post(
       `${NIM_API_BASE}/chat/completions`,
