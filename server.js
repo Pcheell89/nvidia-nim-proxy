@@ -1,4 +1,4 @@
-// server.js - Простой прокси NVIDIA NIM для Janitor AI
+// server.js - NVIDIA NIM Proxy for Janitor AI (с DeepSeek Flash)
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
@@ -6,43 +6,39 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
-// NVIDIA NIM
 const NIM_API_BASE = 'https://integrate.api.nvidia.com/v1';
 const NIM_API_KEY = process.env.NIM_API_KEY;
 
 // Маппинг моделей
 const MODEL_MAPPING = {
-  // === Gemma 4 31B ===
+  // DeepSeek
+  'deepseek-flash': 'deepseek-ai/deepseek-v4-flash-0731',
+  'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash-0731',
+  'deepseek-v4-flash-0731': 'deepseek-ai/deepseek-v4-flash-0731',
+  'flash': 'deepseek-ai/deepseek-v4-flash-0731',
+
+  // Nemotron
+  'nemotron-super': 'nvidia/nemotron-3-super-120b-a12b',
+  'super': 'nvidia/nemotron-3-super-120b-a12b',
+  'nemotron-ultra': 'nvidia/nemotron-3-ultra-550b-a55b',
+  'ultra': 'nvidia/nemotron-3-ultra-550b-a55b',
+
+  // Gemma
   'gemma': 'google/gemma-4-31b-it',
   'gemma-4': 'google/gemma-4-31b-it',
   'gemma-4-31b': 'google/gemma-4-31b-it',
   'gemma-4-31b-it': 'google/gemma-4-31b-it',
 
-  // === GLM-5.2 ===
-  'glm': 'z-ai/glm-5.2',
-  'glm-5.2': 'z-ai/glm-5.2',
-
-  // === DeepSeek Flash ===
-  'gpt-4-turbo': 'deepseek-ai/deepseek-v4-flash',
-  'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash',
-
-  // === Nemotron 3 Ultra ===
-  'nemotron-ultra': 'nvidia/nemotron-3-ultra-550b-a55b',
-  'ultra': 'nvidia/nemotron-3-ultra-550b-a55b',
-  'nemotron-3-ultra': 'nvidia/nemotron-3-ultra-550b-a55b',
-
-  // === Nemotron 3 Super ===
-  'nemotron-super': 'nvidia/nemotron-3-super-120b-a12b',
-  'super': 'nvidia/nemotron-3-super-120b-a12b',
-  'nemotron-3-super': 'nvidia/nemotron-3-super-120b-a12b'
+  // Запасные
+  'gpt-4': 'deepseek-ai/deepseek-v4-flash-0731',
+  'gpt-4o': 'deepseek-ai/deepseek-v4-flash-0731',
+  'gpt-4-turbo': 'deepseek-ai/deepseek-v4-flash-0731'
 };
 
-// Health check
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -52,7 +48,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Список моделей
 app.get('/v1/models', (req, res) => {
   res.json({
     object: 'list',
@@ -65,7 +60,6 @@ app.get('/v1/models', (req, res) => {
   });
 });
 
-// Главный эндпоинт
 app.post('/v1/chat/completions', async (req, res) => {
   try {
     if (!NIM_API_KEY) {
@@ -77,7 +71,9 @@ app.post('/v1/chat/completions', async (req, res) => {
     const { model, messages, temperature, max_tokens, stream } = req.body;
 
     // Определяем модель
-    let nimModel = MODEL_MAPPING[model] || 'nvidia/nemotron-3-ultra-550b-a55b';
+    let nimModel = MODEL_MAPPING[model] || 'deepseek-ai/deepseek-v4-flash-0731';
+
+    console.log(`Запрос → модель: ${model} → ${nimModel}`);
 
     const response = await axios.post(
       `${NIM_API_BASE}/chat/completions`,
@@ -94,7 +90,7 @@ app.post('/v1/chat/completions', async (req, res) => {
           'Content-Type': 'application/json'
         },
         responseType: stream ? 'stream' : 'json',
-        timeout: 180000
+        timeout: 180000 // 3 минуты
       }
     );
 
