@@ -1,4 +1,4 @@
-// server.js - NVIDIA NIM Proxy for Janitor AI (с DeepSeek Flash)
+// server.js - NVIDIA NIM Proxy for Janitor AI (DeepSeek V4.1 Flash)
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
@@ -13,37 +13,21 @@ app.use(express.urlencoded({ limit: '100mb', extended: true }));
 const NIM_API_BASE = 'https://integrate.api.nvidia.com/v1';
 const NIM_API_KEY = process.env.NIM_API_KEY;
 
-// Маппинг моделей
+// Маппинг моделей (только DeepSeek V4.1 Flash)
 const MODEL_MAPPING = {
-  // DeepSeek
-  'deepseek-flash': 'deepseek-ai/deepseek-v4-flash-0731',
-  'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash-0731',
-  'deepseek-v4-flash-0731': 'deepseek-ai/deepseek-v4-flash-0731',
-  'flash': 'deepseek-ai/deepseek-v4-flash-0731',
-
-  // Nemotron
-  'nemotron-super': 'nvidia/nemotron-3-super-120b-a12b',
-  'super': 'nvidia/nemotron-3-super-120b-a12b',
-  'nemotron-ultra': 'nvidia/nemotron-3-ultra-550b-a55b',
-  'ultra': 'nvidia/nemotron-3-ultra-550b-a55b',
-
-  // Gemma
-  'gemma': 'google/gemma-4-31b-it',
-  'gemma-4': 'google/gemma-4-31b-it',
-  'gemma-4-31b': 'google/gemma-4-31b-it',
-  'gemma-4-31b-it': 'google/gemma-4-31b-it',
-
-  // Запасные
-  'gpt-4': 'deepseek-ai/deepseek-v4-flash-0731',
-  'gpt-4o': 'deepseek-ai/deepseek-v4-flash-0731',
-  'gpt-4-turbo': 'deepseek-ai/deepseek-v4-flash-0731'
+  'deepseek-v4.1-flash': 'deepseek-ai/deepseek-v4.1-flash',
+  'deepseek-v4.1': 'deepseek-ai/deepseek-v4.1-flash',
+  'deepseek-flash': 'deepseek-ai/deepseek-v4.1-flash',
+  'flash': 'deepseek-ai/deepseek-v4.1-flash',
+  'gpt-4': 'deepseek-ai/deepseek-v4.1-flash',
+  'gpt-4o': 'deepseek-ai/deepseek-v4.1-flash'
 };
 
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     service: 'NVIDIA NIM Proxy for Janitor AI',
-    models: Object.keys(MODEL_MAPPING),
+    model: 'deepseek-ai/deepseek-v4.1-flash',
     key_configured: !!NIM_API_KEY
   });
 });
@@ -70,8 +54,7 @@ app.post('/v1/chat/completions', async (req, res) => {
 
     const { model, messages, temperature, max_tokens, stream } = req.body;
 
-    // Определяем модель
-    let nimModel = MODEL_MAPPING[model] || 'deepseek-ai/deepseek-v4-flash-0731';
+    let nimModel = MODEL_MAPPING[model] || 'deepseek-ai/deepseek-v4.1-flash';
 
     console.log(`Запрос → модель: ${model} → ${nimModel}`);
 
@@ -90,7 +73,7 @@ app.post('/v1/chat/completions', async (req, res) => {
           'Content-Type': 'application/json'
         },
         responseType: stream ? 'stream' : 'json',
-        timeout: 180000 // 3 минуты
+        timeout: 180000
       }
     );
 
@@ -115,5 +98,5 @@ app.post('/v1/chat/completions', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`NVIDIA NIM Proxy запущен на порту ${PORT}`);
+  console.log(`NVIDIA NIM Proxy (DeepSeek V4.1 Flash) запущен на порту ${PORT}`);
 });
